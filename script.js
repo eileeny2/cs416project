@@ -4,15 +4,16 @@ let currentYear = 2010;
 let data;
 
 // Data loading and preprocessing
-d3.csv("movies.csv").then((data) => {
+d3.csv("movie_dataset.csv").then((movieData) => {
   // Convert numerical columns to numbers
-  data.forEach((d) => {
+  movieData.forEach((d) => {
     d.year = +d.year;
-    d.rating = +d.rating;
+    d.score = +d.score;
+    d.votes = +d.votes;
   });
 
   // Store data in the global variable for access across functions
-  this.data = data;
+  data = movieData;
 
   // Create dropdown options
   const years = Array.from(new Set(data.map((d) => d.year)));
@@ -39,7 +40,7 @@ function updateScene1(year) {
   const genreRatings = genres.map((genre) => {
     const genreMovies = filteredData.filter((d) => d.genre === genre);
     const averageRating =
-      genreMovies.reduce((sum, d) => sum + d.rating, 0) / genreMovies.length;
+      genreMovies.reduce((sum, d) => sum + d.score, 0) / genreMovies.length;
     return { genre, averageRating };
   });
 
@@ -115,6 +116,7 @@ function updateScene1(year) {
   // ...
 
   // Function to update the chart when a new year is selected
+  const yearSelect = d3.select("#year-select");
   yearSelect.on("change", () => {
     const selectedYear = +yearSelect.property("value");
     updateScene1(selectedYear);
