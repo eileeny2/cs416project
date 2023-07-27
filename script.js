@@ -9,7 +9,6 @@ d3.csv("movies.csv").then((movieData) => {
   movieData.forEach((d) => {
     d.year = +d.year;
     d.score = +d.score;
-    d.votes = +d.votes;
   });
 
   // Store data in the global variable for access across functions
@@ -59,10 +58,13 @@ function updateScene1(year) {
   const svg = d3
     .select("#chart1")
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", width + margin.left + margin.right + 100)
+    .attr("height", height + margin.top + margin.bottom + 100)
     .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
+    .attr("transform", `translate(${margin.left},${margin.top + 50})`);
+
+  // Add a group for the annotations
+  const annotationGroup = svg.append("g").attr("class", "annotation-group");
 
   // Create x and y scales
   const xScale = d3
@@ -87,11 +89,29 @@ function updateScene1(year) {
     .attr("transform", `translate(0, ${height})`)
     .call(xAxis);
 
+  // Append x axis label
+  svg
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("x", width - 250)
+      .attr("y", height + margin.bottom - 10)
+      .style("text-anchor", "end")
+      .text("Genre");
+
   // Add y axis to the chart
   svg
     .append("g")
     .attr("class", "y-axis")
     .call(yAxis);
+
+  // Append y axis label
+  svg
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("x", -margin.left - 200)
+      .attr("y", -40)
+      .attr("transform", "rotate(-90)")
+      .text("Average IMDb Rating");
 
   // Create and append the bars to the chart
   svg
@@ -107,13 +127,30 @@ function updateScene1(year) {
     .attr("fill", "steelblue")
     .on("mouseover", function (event, d) {
       // Implement annotation behavior here
+      const tooltip = d3.select("#tooltip");
+      tooltip
+        .style("display", "block")
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY + 10 + "px")
+        .html(`<b>${d.genre}</b><br>
+        Average Rating: ${d.averageRating}</br>`);
     })
     .on("mouseout", function (event, d) {
       // Remove annotation here
+      d3.select("#tooltip").style("display", "none");
     });
 
-  // Add annotations using d3-annotation library
-  // ...
+    // Create and append the tooltip
+    d3.select("body")
+        .append("div")
+        .attr("id", "tooltip")
+        .style("display", "none")
+        .style("position", "absolute")
+        .style("background-color", "white")
+        .style("border", "1px solid #ddd")
+        .style("padding", "8px")
+        .style("font-size", "12px")
+        .style("box-shadow", "2px 2px 6px rgba(0, 0, 0, 0.3)");
 
   // Function to update the chart when a new year is selected
   const yearSelect = d3.select("#year-select");
@@ -121,4 +158,46 @@ function updateScene1(year) {
     const selectedYear = +yearSelect.property("value");
     updateScene1(selectedYear);
   });
+
+  const highestRatingGenre = genreRatings[0];
+  const lowestRatingGenre = genreRatings[genreRatings.length - 1];
+
+  // Create and append the annotations
+  const annotations = [
+    {
+      note: {
+        label: `${highestRatingGenre.averageRating}`,
+        title: `Highest Rating: ${highestRatingGenre.genre}`,
+      },
+      x: xScale(highestRatingGenre.genre) + xScale.bandwidth() / 2,
+      y: yScale(highestRatingGenre.averageRating),
+      dy: -10,
+      dx: 100,
+      subject: {
+        radius: 5,
+      },
+      type: d3.annotationCalloutCircle,
+    },
+    {
+      note: {
+        label: `${lowestRatingGenre.averageRating}`,
+        title: `Lowest Rating: ${lowestRatingGenre.genre}`,
+      },
+      x: xScale(lowestRatingGenre.genre) + xScale.bandwidth() / 2,
+      y: yScale(lowestRatingGenre.averageRating),
+      dy: -30,
+      dx: 0,
+      subject: {
+        radius: 5,
+      },
+      type: d3.annotationCalloutCircle,
+    },
+  ];
+
+  // Add annotations to the chart
+  const makeAnnotations = d3.annotation()
+    .type(annotations.type)
+    .annotations(annotations);
+
+  annotationGroup.call(makeAnnotations);
 }
