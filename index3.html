@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+  <title>CS416 Project - Scene 3</title>
+</head>
+<body>
+  <h1>Movie Industry Narrative Visualization - Scene 3</h1>
+  <!-- Scene 3: Bubble Chart for Budget, Gross Revenue, and IMDb Score by Genre -->
+  <div id="scene3" class="scene-container">
+    <h2>Bubble Chart for Budget, Gross Revenue, and IMDb Score by Genre</h2>
+    <div id="genreDropdown">
+      <label for="genre-select">Select Genre:</label>
+      <select id="genre-select"></select>
+    </div>
+    <div id="chart3"></div>
+    <!-- Slider and labels for IMDb rating range -->
+    <div id="slider-container">
+        <label for="imdb-min">Min IMDb:</label>
+        <input type="range" id="imdb-min" min="0" max="10" step="0.1" value="0">
+        <span id="imdb-min-value">0</span>
+        <br>
+        <label for="imdb-max">Max IMDb:</label>
+        <input type="range" id="imdb-max" min="0" max="10" step="0.1" value="10">
+        <span id="imdb-max-value">10</span>
+      </div>
+    <!-- Navigation button back to Scene 2 -->
+    <a href="index2.html" class="nav-button">Previous: Scene 2</a>
+  </div>
+
+  <!-- Import the script3.js file -->
+  <script src="script3.js"></script>
+</body>
+</html>
