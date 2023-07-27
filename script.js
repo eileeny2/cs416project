@@ -4,7 +4,7 @@ let currentYear = 2010;
 let data;
 
 // Data loading and preprocessing
-d3.csv("movie_dataset.csv").then((movieData) => {
+d3.csv("movies.csv").then((movieData) => {
   // Convert numerical columns to numbers
   movieData.forEach((d) => {
     d.year = +d.year;
