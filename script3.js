@@ -74,7 +74,7 @@ d3.csv("movies.csv").then((movieData) => {
       const scoreScale = d3
         .scaleLinear()
         .domain(d3.extent(filteredData, (d) => d.score))
-        .range([2, 17]); // Adjust the range for desired bubble sizes
+        .range([2, 17]);
 
     // Create color scale for IMDb score (lighter shades for lower scores, darker shades for higher scores)
     const colorScale = d3
